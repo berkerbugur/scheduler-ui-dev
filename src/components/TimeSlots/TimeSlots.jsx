@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import './TimeSlots.css';
 
-const TimeSlots = ({ timeSlots, isVisible, isFirstColumn }) => {
+const TimeSlots = ({ timeSlots }) => {
     const [selectedSlot, setSelectedSlot] = useState(null);
 
     const handleSlotClick = (timeIndex) => {
         setSelectedSlot(timeIndex);
     };
 
-    if (!isFirstColumn) return null;
-
     return (
-        <div className={`time-slots ${!isVisible ? 'invisible' : ''}`}>
-            {timeSlots.map((time, timeIndex) => (
+        <div className="time-slots">
+            {!!timeSlots && timeSlots.map((time, timeIndex) => (
                 <div
                     key={timeIndex}
                     className={`time-slot ${selectedSlot === timeIndex ? 'selected' : ''}`}

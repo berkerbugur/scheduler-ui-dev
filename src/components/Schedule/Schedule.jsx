@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useMemo, useRef, useState} from 'react';
 import DateControls from '../DateControls/DateControls';
 import Calendar from '../Calendar/Calendar';
 import Actions from '../Actions/Actions';
@@ -8,7 +8,10 @@ import {getDateRange} from "../../utils/dateUtils.js";
 const Schedule = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [slots, setSlots] = useState([]);
+    const calenderRef = useRef(null);
+
+    const prev = () => {calenderRef.current?.prevDates()};
+    const next = () => {calenderRef.current?.nextDates()};
 
     const schedule = useMemo(() => {
         let scheduleMap = new Map();
@@ -25,8 +28,10 @@ const Schedule = () => {
                 setStartDate={setStartDate}
                 endDate={endDate}
                 setEndDate={setEndDate}
+                onPrev={prev}
+                onNext={next}
             />
-            <Calendar startDate={startDate} timeSlots={slots} schedule={schedule}/>
+            <Calendar schedule={schedule} ref={calenderRef} />
             <Actions/>
         </div>
     );

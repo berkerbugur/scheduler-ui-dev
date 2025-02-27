@@ -1,7 +1,6 @@
 .schedule-container {
-  width: 100%;
-  position: absolute;
-  margin: 0 auto;
+  position: relative;
+  margin: 0 44px;
   left: 50%;
   top: 25%;
   transform: translate(-50%, -50%);
@@ -10,7 +9,7 @@
 
 .schedule-container h1 {
   color: #000;
-  margin: 44px 0;
+  margin-bottom: 44px;
 }
 
 .invisible {

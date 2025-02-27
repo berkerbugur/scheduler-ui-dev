@@ -1,10 +1,12 @@
 .calendar {
   display: flex;
-  gap: 1px;
+  gap: 12px;
   margin: 20px 0;
+  min-height: 452px;
   height: 100%;
   background-color: white;
   border: none;
+  align-content: flex-start;
 }
 
 .calendar-empty {
@@ -13,9 +15,8 @@
 }
 
 .day-header {
-  padding: 10px;
   text-align: center;
-  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
   min-height: 60px;
   display: flex;
   flex-direction: column;
@@ -32,7 +33,7 @@
 }
 
 .day-column {
-  flex: 1;
+  min-width: 160px;
   background-color: white;
   flex-direction: column;
 }
