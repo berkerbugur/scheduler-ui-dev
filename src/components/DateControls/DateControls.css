@@ -1,0 +1,134 @@
+.date-controls {
+  display: flex;
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+
+.custom-datepicker {
+  padding: 0;
+  border: 1px solid #000;
+  width: 160px;
+  height: 48px;
+  color: #000;
+  background-color: white;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 48px;
+}
+
+.custom-datepicker::placeholder {
+  text-align: center;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.react-datepicker-ignore-onclickoutside {
+  /* TODO This is the class that makes the datepicker wiggle*/
+  margin: 0;
+}
+
+.date-input {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 120px;
+  position: relative;
+}
+
+.days-count {
+
+}
+
+.date-input label,
+.days-count {
+  color: #000;
+  white-space: nowrap;
+}
+
+.date-input label {
+  text-align: center;
+  width: 100%;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.date-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.custom-datepicker::placeholder {
+  text-align: center;
+}
+
+.navigation {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* Overriding datepicker lib styles */
+.react-datepicker {
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  width: auto;
+  position: static;
+}
+
+.react-datepicker-popper {
+  position: absolute;
+  z-index: 1000;
+}
+
+.react-datepicker__header {
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ccc;
+}
+
+.react-datepicker__day,
+.react-datepicker__day-name,
+.react-datepicker__current-month {
+  color: #000;
+}
+
+.react-datepicker__day--selected {
+  background-color: #ff69b4;
+  color: white;
+}
+
+.react-datepicker__day--selected:hover {
+  background-color: #ff45a4;
+}
+
+.react-datepicker__day:hover {
+  background-color: #f0f0f0;
+}
+
+.react-datepicker__day--disabled {
+  color: #ccc;
+}
+
+.react-datepicker-portal {
+  position: absolute;
+}

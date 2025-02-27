@@ -1,0 +1,20 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  width: 160px;
+  height: 48px;
+}
+
+.reset { background-color: #333; }
+.autocomplete { background-color: #ff69b4; }
+.upload { background-color: #999; }

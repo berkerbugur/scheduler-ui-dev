@@ -1,0 +1,42 @@
+.calendar {
+  display: flex;
+  gap: 1px;
+  margin: 20px 0;
+  height: 100%;
+  background-color: white;
+  border: none;
+}
+
+.calendar-empty {
+  background-color: transparent;
+  border: none;
+}
+
+.day-header {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.day-name,
+.day-date {
+  color: #000;
+}
+
+.day-name {
+  font-weight: bold;
+}
+
+.day-column {
+  flex: 1;
+  background-color: white;
+  flex-direction: column;
+}
+
+.day-column:not(:first-child) .time-slots {
+  background-color: transparent;
+}

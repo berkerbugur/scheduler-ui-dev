@@ -1,0 +1,18 @@
+.schedule-container {
+  width: 100%;
+  position: absolute;
+  margin: 0 auto;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+}
+
+.schedule-container h1 {
+  color: #000;
+  margin: 44px 0;
+}
+
+.invisible {
+  visibility: hidden;
+}
