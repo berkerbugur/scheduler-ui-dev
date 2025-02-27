@@ -38,6 +38,6 @@
   flex-direction: column;
 }
 
-.day-column:not(:first-child) .time-slots {
+.day-column:not(:first-child) {
   background-color: transparent;
 }

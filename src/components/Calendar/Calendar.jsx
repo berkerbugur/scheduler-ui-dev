@@ -16,6 +16,7 @@ const Calendar = forwardRef(({schedule}, ref) => {
     let maxPage = days.length > maxDayIndex ? maxDayIndex : days.length;
 
     let pagedDays = useMemo(() => {
+        // TODO Not Rerendering
         return days.slice(minPage, maxPage)
     }, [minPage, maxPage]);
 
