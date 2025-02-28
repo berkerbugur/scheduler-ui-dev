@@ -10,10 +10,8 @@ const pageDirection = {
 }
 
 // eslint-disable-next-line react/display-name
-const Calendar = forwardRef(({schedule}, ref) => {
+const Calendar = forwardRef(({schedule, setPageStart, setPageEnd, addSlot}, ref) => {
     const days = [...(schedule || []).keys()];
-    // let minPage = 0;
-    // let maxPage = days.length > maxDayIndex ? maxDayIndex : days.length;
     const [minPage, setMinPage] = useState(0)
     const [maxPage, setMaxPage] = useState(0)
 
@@ -23,6 +21,8 @@ const Calendar = forwardRef(({schedule}, ref) => {
     }, [days.length]);
 
     let pagedDays = useMemo(() => {
+        setPageStart(minPage === 0);
+        setPageEnd(maxPage === days.length || 0); // TODO bad state call? Transform into useEffect
         return days.slice(minPage, maxPage)
     }, [minPage, maxPage]);
 
@@ -68,7 +68,9 @@ const Calendar = forwardRef(({schedule}, ref) => {
                         <div className="day-date">{getFormattedDate(day)}</div>
                     </div>
                     <TimeSlots
+                        day={day}
                         timeSlots={schedule.get(day)}
+                        addSlot={addSlot}
                     />
                 </div>
             ))}

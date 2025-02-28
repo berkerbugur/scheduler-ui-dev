@@ -16,7 +16,6 @@
 
 .day-header {
   text-align: center;
-  border-top: 1px solid #eee;
   min-height: 60px;
   display: flex;
   flex-direction: column;

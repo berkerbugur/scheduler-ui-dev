@@ -1,26 +1,30 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import './TimeSlots.css';
 
-const TimeSlots = ({ timeSlots }) => {
-    const [selectedSlot, setSelectedSlot] = useState(null);
+const TimeSlots = ({ day, timeSlots, addSlot }) => {
+    const [hover, setHover] = useState(false)
+    timeSlots && timeSlots[0] && setHover(true)
 
-    const handleSlotClick = (timeIndex) => {
-        setSelectedSlot(timeIndex);
+    const handleInput = () => {
+        addSlot(day, '09:00')
+        console.log('input')
     };
 
     return (
-        <div className="time-slots">
-            {!!timeSlots && timeSlots.map((time, timeIndex) => (
+        <div className={`time-slots ${hover ? 'active' : ''}`} onMouseEnter={() => setHover(true)}
+             onMouseLeave={() => setHover(false)}>
+            {timeSlots.length > 0 && (
                 <div
-                    key={timeIndex}
-                    className={`time-slot ${selectedSlot === timeIndex ? 'selected' : ''}`}
-                    onClick={() => handleSlotClick(timeIndex)}
-                >
-                    {time}
+                    className="time-slot selected">
+                    Time
                 </div>
-            ))}
+            )}
+            <div
+                className={`add-time ${hover ? '' : 'invisible'}`} onClick={handleInput}>
+                Add Time
+            </div>
         </div>
     );
 };
 
-export default TimeSlots; 
+export default TimeSlots;

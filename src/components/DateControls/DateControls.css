@@ -1,5 +1,6 @@
 .date-controls {
   display: flex;
+  border-bottom: #C8C8C8 solid 1px;
 }
 
 .date-picker {
@@ -7,6 +8,11 @@
   align-items: center;
   gap: 12px;
   margin: 0;
+}
+
+.date-input:last-child {
+  padding: 10px 0 0;
+  align-items: flex-start;
 }
 
 
@@ -38,9 +44,10 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 5px;
+  gap: 14px;
   min-width: 120px;
   position: relative;
+  padding-bottom: 14px;
 }
 
 .days-count {
@@ -59,20 +66,41 @@
 }
 
 .nav-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  width: 15px;
+  height: 15px;
+  border-bottom: solid 3px;
+  border-left: solid 3px;
 }
 
-.nav-btn:hover {
+.enable {
+  border-color: black;
+}
+
+.disable {
+  border-color: #C8C8C8;
+}
+
+.enable:hover {
   transform: scale(1.5);
 }
 
-.nav-btn:active {
+.enable:active {
   transform: scale(2.0);
+}
+
+.disable:hover :active {
+  transform: scale(1.0);
+}
+
+.prev {
+  rotate: 45deg;
+}
+
+.next {
+  rotate: -135deg;
 }
 
 .date-picker-row {
@@ -87,8 +115,10 @@
 
 .navigation {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   margin-left: auto;
+  align-self: flex-end;
+  padding-bottom: 20px;
 }
 
 /* Overriding datepicker lib styles */

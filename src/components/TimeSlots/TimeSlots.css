@@ -1,19 +1,43 @@
 .time-slots {
     flex: 1;
     flex-direction: column;
-    min-height: 200px;
+    height: 286px;
     background-color: #F4F4F4;
+    gap: 12px;
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.time-slots::-webkit-scrollbar {
+    display: none; /* chrome based browsers */
+}
+
+.active {
+    background-color: #D8D8D8;
 }
 
 .time-slot {
     border: 1px solid #ff69b4;
-    padding: 8px;
+    padding: 11px;
     text-align: center;
     color: #000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
+}
+
+.add-time {
+    padding: 11px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #5C5C5C;
+    cursor: pointer;
+}
+
+.add-time:hover {
+    background-color: #303030;
 }
 
 .time-slot:hover {
@@ -22,7 +46,6 @@
 }
 
 .time-slot.selected {
-    background-color: #ff69b4;
-    color: white;
+    color: #ff45a4;
     border-color: #ff45a4;
 }

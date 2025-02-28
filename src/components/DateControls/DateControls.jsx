@@ -3,7 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import './DateControls.css';
 import {getDateCount} from "../../utils/dateUtils.js";
 
-const DateControls = ({ startDate, setStartDate, endDate, setEndDate, onNext, onPrev }) => {
+const DateControls = ({ startDate, setStartDate, endDate, setEndDate, onNext, onPrev, pageStart, pageEnd }) => {
     const today = new Date();
 
     return (
@@ -47,10 +47,9 @@ const DateControls = ({ startDate, setStartDate, endDate, setEndDate, onNext, on
                     <span className="days-count">{endDate ? getDateCount(startDate, endDate) : 0} days</span>
                 </div>
             </div>
-
-            <div className="navigation">
-                <button className="nav-btn prev" onClick={onPrev}>‹</button>
-                <button className="nav-btn next" onClick={onNext}>›</button>
+            <div className={`navigation ${!endDate ? 'invisible' : ''}`}>
+                <div className={`nav-btn prev ${pageStart ? 'disable' : 'enable'}`} onClick={onPrev}></div>
+                <div className={`nav-btn next ${pageEnd? 'disable' : 'enable'}`} onClick={onNext}></div>
             </div>
         </div>
     );
