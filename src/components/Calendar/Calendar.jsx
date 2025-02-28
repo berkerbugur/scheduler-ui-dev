@@ -1,7 +1,7 @@
 import TimeSlots from '../TimeSlots/TimeSlots.jsx';
 import './Calendar.css';
 import {getDayName, getFormattedDate} from "../../utils/dateUtils.js";
-import {forwardRef, useCallback, useImperativeHandle, useMemo, useState} from "react";
+import {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState} from "react";
 
 const maxDayIndex = 7;
 const pageDirection = {
@@ -12,11 +12,17 @@ const pageDirection = {
 // eslint-disable-next-line react/display-name
 const Calendar = forwardRef(({schedule}, ref) => {
     const days = [...(schedule || []).keys()];
-    let minPage = 0;
-    let maxPage = days.length > maxDayIndex ? maxDayIndex : days.length;
+    // let minPage = 0;
+    // let maxPage = days.length > maxDayIndex ? maxDayIndex : days.length;
+    const [minPage, setMinPage] = useState(0)
+    const [maxPage, setMaxPage] = useState(0)
+
+    useEffect(() => {
+        setMinPage(0);
+        setMaxPage(days.length > maxDayIndex ? maxDayIndex : days.length);
+    }, [days.length]);
 
     let pagedDays = useMemo(() => {
-        // TODO Not Rerendering
         return days.slice(minPage, maxPage)
     }, [minPage, maxPage]);
 
@@ -26,13 +32,13 @@ const Calendar = forwardRef(({schedule}, ref) => {
     }));
 
     const increasePage = (increment) => {
-        maxPage += increment;
-        minPage += increment;
+        setMaxPage((prevMax) => prevMax + increment);
+        setMinPage((prevMin) => prevMin + increment);
     }
 
     const decreasePage = (decrement) => {
-        minPage -= decrement;
-        maxPage -= decrement;
+        setMinPage((prevMin) => prevMin - decrement);
+        setMaxPage((prevMax) => prevMax - decrement);
     }
 
     const paginateDays = (direction) => {

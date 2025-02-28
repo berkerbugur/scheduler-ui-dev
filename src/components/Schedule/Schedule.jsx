@@ -21,7 +21,7 @@ const Schedule = () => {
     }, [endDate]);
 
     return (
-        <div className="schedule-container"> `
+        <div className="schedule-container">
             <h1>Create new Schedule</h1>
             <DateControls
                 startDate={startDate}
