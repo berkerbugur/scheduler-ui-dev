@@ -3,7 +3,7 @@ import DateControls from '../DateControls/DateControls';
 import Calendar from '../Calendar/Calendar';
 import Actions from '../Actions/Actions';
 import './Schedule.css';
-import {getDateRange, getFormattedDate} from "../../utils/dateUtils.js";
+import {getDateRange} from "../../utils/dateUtils.js";
 
 const Schedule = () => {
     const [startDate, setStartDate] = useState(null);
@@ -24,7 +24,6 @@ const Schedule = () => {
     }, [startDate, endDate]);
 
     const addSlot = (day, slot) => {
-        // creating new map gets the shallow copy of schedule and is seen as an update from components, js is weird :)
         setSchedule(new Map(schedule.set(day, [...schedule.get(day), slot])));
     }
 

@@ -1,7 +1,7 @@
 import TimeSlots from '../TimeSlots/TimeSlots.jsx';
 import './Calendar.css';
 import {getDayName, getFormattedDate} from "../../utils/dateUtils.js";
-import {forwardRef, useEffect, useImperativeHandle, useMemo, useState} from "react";
+import {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState} from "react";
 import ScrollBar from "../ScrollBar/ScrollBar.jsx";
 
 const maxDayIndex = 7;
@@ -26,7 +26,7 @@ const Calendar = forwardRef(({schedule, setPageStart, setPageEnd, addSlot}, ref)
 
     let pagedDays = useMemo(() => {
         setPageStart(minPage === 0);
-        setPageEnd(maxPage === days?.length || 0); // TODO bad state call? Transform into useEffect
+        setPageEnd(maxPage === days?.length || 0); // TODO bad state call? Transform into useEffect?
         return days.slice(minPage, maxPage)
     }, [minPage, maxPage]);
 
@@ -63,9 +63,26 @@ const Calendar = forwardRef(({schedule, setPageStart, setPageEnd, addSlot}, ref)
         paginateDays(pageDirection.prev)
     };
 
+    const pageCount = useMemo(() => {
+        const scheduleCount = [...((schedule || []).keys())].length
+        return Math.ceil(scheduleCount / maxDayIndex);
+    }, [schedule]);
+
+    const currentPage = useMemo(() => {
+        return Math.ceil(minPage / maxDayIndex)
+    }, [minPage]);
+
+    const handleScroll = (e) => {
+        if (e.deltaY < 0) {
+            prevDates();
+        } else {
+            nextDates();
+        }
+    };
+
     return (
         <div>
-            <div className={`calendar ${!days ? 'calendar-empty' : ''}`}>
+            <div className={`calendar ${!days ? 'calendar-empty' : ''}`} onWheel={handleScroll}>
                 {days && pagedDays.map((day, index) => (
                     <div key={index} className="day-column">
                         <div className={`day-header ${!day ? 'invisible' : ''}`}>
@@ -80,7 +97,7 @@ const Calendar = forwardRef(({schedule, setPageStart, setPageEnd, addSlot}, ref)
                     </div>
                 ))}
             </div>
-            <ScrollBar/>
+            <ScrollBar pageCount={pageCount} currentPage={currentPage} />
         </div>
     );
 });
