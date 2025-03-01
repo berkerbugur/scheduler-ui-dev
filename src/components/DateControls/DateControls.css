@@ -4,10 +4,10 @@
 }
 
 .date-picker {
+  margin-left: 44px;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 0;
 }
 
 .date-input:last-child {
@@ -65,6 +65,14 @@
   width: 100%;
 }
 
+.navigation {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+  align-self: flex-end;
+  padding-bottom: 20px;
+}
+
 .nav-btn {
   cursor: pointer;
   display: flex;
@@ -111,14 +119,6 @@
 
 .custom-datepicker::placeholder {
   text-align: center;
-}
-
-.navigation {
-  display: flex;
-  gap: 15px;
-  margin-left: auto;
-  align-self: flex-end;
-  padding-bottom: 20px;
 }
 
 /* Overriding datepicker lib styles */

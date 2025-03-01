@@ -1,7 +1,8 @@
 import TimeSlots from '../TimeSlots/TimeSlots.jsx';
 import './Calendar.css';
 import {getDayName, getFormattedDate} from "../../utils/dateUtils.js";
-import {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useMemo, useState} from "react";
+import ScrollBar from "../ScrollBar/ScrollBar.jsx";
 
 const maxDayIndex = 7;
 const pageDirection = {
@@ -11,18 +12,21 @@ const pageDirection = {
 
 // eslint-disable-next-line react/display-name
 const Calendar = forwardRef(({schedule, setPageStart, setPageEnd, addSlot}, ref) => {
-    const days = [...(schedule || []).keys()];
     const [minPage, setMinPage] = useState(0)
     const [maxPage, setMaxPage] = useState(0)
+
+    const days = useMemo(() => {
+        return [...(schedule || []).keys()];
+    }, [schedule]);
 
     useEffect(() => {
         setMinPage(0);
         setMaxPage(days.length > maxDayIndex ? maxDayIndex : days.length);
-    }, [days.length]);
+    }, [days]);
 
     let pagedDays = useMemo(() => {
         setPageStart(minPage === 0);
-        setPageEnd(maxPage === days.length || 0); // TODO bad state call? Transform into useEffect
+        setPageEnd(maxPage === days?.length || 0); // TODO bad state call? Transform into useEffect
         return days.slice(minPage, maxPage)
     }, [minPage, maxPage]);
 
@@ -60,20 +64,23 @@ const Calendar = forwardRef(({schedule, setPageStart, setPageEnd, addSlot}, ref)
     };
 
     return (
-        <div className={`calendar ${!days ? 'calendar-empty' : ''}`}>
-            {!!days && pagedDays.map((day, index) => (
-                <div key={index} className="day-column">
-                    <div className={`day-header ${!day ? 'invisible' : ''}`}>
-                        <div className="day-name">{getDayName(day)}</div>
-                        <div className="day-date">{getFormattedDate(day)}</div>
+        <div>
+            <div className={`calendar ${!days ? 'calendar-empty' : ''}`}>
+                {days && pagedDays.map((day, index) => (
+                    <div key={index} className="day-column">
+                        <div className={`day-header ${!day ? 'invisible' : ''}`}>
+                            <div className="day-name">{getDayName(day)}</div>
+                            <div className="day-date">{getFormattedDate(day)}</div>
+                        </div>
+                        <TimeSlots
+                            day={day}
+                            timeSlots={schedule.get(day)}
+                            addSlot={addSlot}
+                        />
                     </div>
-                    <TimeSlots
-                        day={day}
-                        timeSlots={schedule.get(day)}
-                        addSlot={addSlot}
-                    />
-                </div>
-            ))}
+                ))}
+            </div>
+            <ScrollBar/>
         </div>
     );
 });

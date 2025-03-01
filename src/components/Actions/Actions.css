@@ -2,7 +2,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 37px;
 }
 
 .btn {
@@ -16,5 +16,5 @@
 }
 
 .reset { background-color: #333; }
-.autocomplete { background-color: #ff69b4; }
+.autocomplete { background-color: #E11BB6; }
 .upload { background-color: #999; }

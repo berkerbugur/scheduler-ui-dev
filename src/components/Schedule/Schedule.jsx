@@ -1,34 +1,31 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import DateControls from '../DateControls/DateControls';
 import Calendar from '../Calendar/Calendar';
 import Actions from '../Actions/Actions';
 import './Schedule.css';
-import {getDateRange} from "../../utils/dateUtils.js";
+import {getDateRange, getFormattedDate} from "../../utils/dateUtils.js";
 
 const Schedule = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [pageStart, setPageStart] = useState(true);
     const [pageEnd, setPageEnd] = useState(false);
+    const [schedule, setSchedule] = useState(null)
     const calenderRef = useRef(null);
 
     const prev = () => {calenderRef.current?.prevDates()};
     const next = () => {calenderRef.current?.nextDates()};
 
-    const schedule = useMemo(() => {
+    useEffect(() => {
         let scheduleMap = new Map();
         const dateRange = getDateRange(startDate, endDate);
         dateRange?.forEach(date => { scheduleMap.set(date, []); });
-        return scheduleMap
-    }, [endDate]);
-
-    useEffect(() => {
-        console.log(schedule)
-    }, [schedule]);
+        setSchedule(scheduleMap)
+    }, [startDate, endDate]);
 
     const addSlot = (day, slot) => {
-        // TODO does not update with child trigger
-        schedule.set(day, [...schedule.get(day), slot]);
+        // creating new map gets the shallow copy of schedule and is seen as an update from components, js is weird :)
+        setSchedule(new Map(schedule.set(day, [...schedule.get(day), slot])));
     }
 
     return (

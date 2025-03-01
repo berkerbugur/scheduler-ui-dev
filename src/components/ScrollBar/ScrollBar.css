@@ -1,0 +1,12 @@
+.scrollbar-container {
+    margin-left: 44px;
+    border-bottom: 1px solid black;
+}
+
+
+.scrollbar {
+    width: 20%;
+    border-bottom: 11px solid black;
+    position: relative;
+    left: 20%
+}
