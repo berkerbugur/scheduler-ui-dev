@@ -3,7 +3,7 @@ import DateControls from '../DateControls/DateControls';
 import Calendar from '../Calendar/Calendar';
 import Actions from '../Actions/Actions';
 import './Schedule.css';
-import {getDateRange} from "../../utils/dateUtils.js";
+import {getDateRange, getGlobalDateString} from "../../utils/dateUtils.js";
 
 const Schedule = () => {
     const [startDate, setStartDate] = useState(null);
@@ -23,13 +23,13 @@ const Schedule = () => {
     useEffect(() => {
         let scheduleMap = new Map();
         const dateRange = getDateRange(startDate, endDate);
-        dateRange?.forEach(date => { scheduleMap.set(date, []); });
+        dateRange?.forEach(date => { scheduleMap.set(getGlobalDateString(date), []); });
         setSchedule(scheduleMap)
     }, [startDate, endDate, resetSlots]);
 
     const addSlot = (day, slot) => {
         setCanReset(true)
-        setSchedule(new Map(schedule.set(day, [...schedule.get(day) || [], slot]))); // TODO problematic entry addition, key repetition
+        setSchedule(new Map(schedule.set(day, [...schedule.get(day) || [], slot])));
     };
 
     const doReset = () => {
