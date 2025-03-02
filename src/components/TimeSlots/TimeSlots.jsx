@@ -1,10 +1,15 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import './TimeSlots.css';
 
-const TimeSlots = ({ timeSlots, day, addSlot }) => {
+const TimeSlots = ({ timeSlots, day, addSlot, scrollable, setScrollable}) => {
     const [hover, setHover] = useState(false)
     const [input, setInput] = useState('');
     const [isAdd, setIsAdd] = useState(true)
+    const slotsRef = useRef(null);
+
+    useEffect(() => {
+        setScrollable(hover && (timeSlots || []).length > 4)
+    }, [hover]);
 
     const handleAdd = () => {
         if (input) addSlot(day, input)
@@ -22,8 +27,15 @@ const TimeSlots = ({ timeSlots, day, addSlot }) => {
         setInput(event?.target.value)
     }
 
+    const handleScroll = (e) => {
+        if (scrollable && slotsRef.current?.contains(e.target)) {
+            const scrollDelta = e.deltaY;
+            slotsRef.current.scrollTop += scrollDelta;
+        }
+    }
+
     return (
-        <div className={`time-slots ${hover ? 'active' : ''}`} onMouseEnter={() => setHover(true)}
+        <div ref={slotsRef} className={`time-slots ${hover ? 'active' : ''}`} onWheel={(e) => {handleScroll(e)}} onMouseEnter={() => setHover(true)}
              onMouseLeave={() => setHover(false)}>
             {timeSlots && timeSlots?.length > 0 && timeSlots?.map((slot, index) => (
                 <div
@@ -45,8 +57,8 @@ const TimeSlots = ({ timeSlots, day, addSlot }) => {
                         type="time"
                         value={input}
                         onChange={handleInput}
-                        onBlur={handleUnfocus}
-                        onKeyDown={(e) => {e.keyCode === 13 ? handleAdd() : null }}
+                        onMouseLeave={handleUnfocus}
+                        onKeyDown={(e) => {e.keyCode === 13 ? handleAdd() : e.keyCode === 27 ? handleUnfocus() : null }}
                     />
             }
         </div>

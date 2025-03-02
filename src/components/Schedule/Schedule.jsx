@@ -31,7 +31,7 @@ const Schedule = () => {
     useEffect(() => {
         let scheduleMap = new Map();
         const dateRange = getDateRange(startDate, endDate);
-        dateRange?.forEach(date => { scheduleMap.set(getGlobalDateString(date), []); });
+        dateRange?.forEach(date => { scheduleMap.set(getGlobalDateString(date), schedule.get(getGlobalDateString(date))); });
         setSchedule(scheduleMap)
     }, [startDate, endDate, resetSlots]);
 
@@ -137,7 +137,6 @@ const Schedule = () => {
                 cpSched.set(day, index+1 % templateLength === 0 ? [template.rootSlots[templateLength-1]] : [template.rootSlots[index % templateLength]]);
             }
         })
-
         setSchedule(cpSched)
     }
 
@@ -169,7 +168,6 @@ const Schedule = () => {
             />
             <Calendar
                 schedule={schedule}
-                days={[...(schedule || []).keys()]}
                 setPageStart={setPageStart}
                 setPageEnd={setPageEnd}
                 addSlot={addSlot}

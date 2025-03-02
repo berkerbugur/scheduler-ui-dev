@@ -51,10 +51,6 @@
     cursor: pointer;
 }
 
-.add-time:hover {
-    background-color: #303030;
-}
-
 .time-slot:hover {
     background-color: #fff0f7;
     border-color: #ff45a4;

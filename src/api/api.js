@@ -4,12 +4,11 @@ const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
-const basePath = '/api/subscription'
+const basePath = '/api/v1/schedule/'
 
 const endpoint = {
-    schedule: basePath + '/api/v1/schedule',
-    extend: basePath + '/extend',
-    create: basePath +'/create',
+    extend: basePath + 'extend',
+    create: basePath +'create',
 }
 
 export {api, endpoint}

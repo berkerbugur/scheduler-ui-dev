@@ -11,20 +11,25 @@ const pageDirection = {
 }
 
 // eslint-disable-next-line react/display-name
-const Calendar = forwardRef(({schedule, days, template, setPageStart, setPageEnd, addSlot, canAutoComp}, ref) => {
+const Calendar = forwardRef(({schedule, template, setPageStart, setPageEnd, addSlot, canAutoComp}, ref) => {
     const [minPage, setMinPage] = useState(0)
     const [maxPage, setMaxPage] = useState(0)
+    const [pagedDays, setPagedDays] = useState([])
+    const [days, setDays] = useState([])
+    const [scrollable, setScrollable] = useState(true)
 
     useEffect(() => {
+        const dayList = [...(schedule || []).keys()]
         setMinPage(0);
-        setMaxPage(days.length > maxDayIndex ? maxDayIndex : days.length);
-    }, [days]);
+        setMaxPage(dayList.length > maxDayIndex ? maxDayIndex : dayList.length);
+        setDays(dayList)
+    }, [schedule]);
 
-    let pagedDays = useMemo(() => {
+    useEffect(() => {
         setPageStart(minPage === 0);
-        setPageEnd(maxPage === days?.length || 0); // TODO bad state call? Transform into useEffect?
-        return days.slice(minPage, maxPage)
-    }, [minPage, maxPage]);
+        setPageEnd(maxPage === days?.length);
+        setPagedDays(days.slice(minPage, maxPage))
+    }, [schedule, minPage, maxPage]);
 
     useImperativeHandle(ref, () => ({
         nextDates,
@@ -42,12 +47,14 @@ const Calendar = forwardRef(({schedule, days, template, setPageStart, setPageEnd
     }
 
     const paginateDays = (direction) => {
-        if (direction === pageDirection.next) {
-            maxPage + maxDayIndex > days.length ? increasePage(days.length - maxPage) : increasePage(maxDayIndex)
-        }
+        if (!scrollable) {
+            if (direction === pageDirection.next) {
+                maxPage + maxDayIndex > days.length ? increasePage(days.length - maxPage) : increasePage(maxDayIndex)
+            }
 
-        if (direction === pageDirection.prev) {
-            minPage - maxDayIndex < 0 ? decreasePage(minPage) : decreasePage(maxDayIndex)
+            if (direction === pageDirection.prev) {
+                minPage - maxDayIndex < 0 ? decreasePage(minPage) : decreasePage(maxDayIndex)
+            }
         }
     }
 
@@ -91,9 +98,9 @@ const Calendar = forwardRef(({schedule, days, template, setPageStart, setPageEnd
     return (
         <div>
             <div className={`calendar ${!days ? 'calendar-empty' : ''}`} onWheel={handleScroll}>
-                {days && pagedDays.map((day, index) => (
+                {pagedDays && pagedDays.map((day, index) => (
                     <div key={index} className="day-column">
-                        <div className={`day-header ${!day ? 'invisible' : ''}`}>
+                        <div className={`day-header ${day ? '' : 'invisible'}`}>
                             <div className="day-name">{getDayName(day)}</div>
                             <div className="day-date">{getFormattedDate(day)}</div>
                         </div>
@@ -101,6 +108,8 @@ const Calendar = forwardRef(({schedule, days, template, setPageStart, setPageEnd
                             day={day}
                             timeSlots={schedule.get(day)}
                             addSlot={addSlot}
+                            scrollable={scrollable}
+                            setScrollable={setScrollable}
                         />
                     </div>
                 ))}
