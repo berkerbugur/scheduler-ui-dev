@@ -45,6 +45,7 @@
   margin: 0 0 42px 44px;
   font-weight: 400;
   text-align: center;
+  min-height: 28px;
 }
 
 .template {

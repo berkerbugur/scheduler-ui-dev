@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './TimeSlots.css';
 
 const TimeSlots = ({ timeSlots, day, addSlot }) => {
@@ -25,7 +25,7 @@ const TimeSlots = ({ timeSlots, day, addSlot }) => {
     return (
         <div className={`time-slots ${hover ? 'active' : ''}`} onMouseEnter={() => setHover(true)}
              onMouseLeave={() => setHover(false)}>
-            {timeSlots?.length > 0 && timeSlots.map((slot, index) => (
+            {timeSlots && timeSlots?.length > 0 && timeSlots?.map((slot, index) => (
                 <div
                     key={index}
                     className="time-slot selected">

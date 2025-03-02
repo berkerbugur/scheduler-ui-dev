@@ -3,13 +3,12 @@ const getDayName = (date) => {
 }
 
 const getGlobalDateString = (date) => {
-    const st = new Date(date).toLocaleDateString("en-US", {
+    // need to use js global date as the initial dateStr
+    return new Date(date).toLocaleDateString("en-US", {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
     });
-    console.log(st);
-    return st;
 }
 
 const getFormattedDate = (date) => {
