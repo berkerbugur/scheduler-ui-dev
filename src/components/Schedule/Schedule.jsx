@@ -84,9 +84,6 @@ const Schedule = () => {
         }
 
         api.put(endpoint.extend, request).then(response => {
-            console.log('Girdim')
-            console.log(response)
-
             setCanAutoComp(false)
             setHover(false)
             setCanUpload(true)
@@ -96,7 +93,6 @@ const Schedule = () => {
                 rootSlots: []
             })
         }).catch(error => {
-            console.log('burdayim')
             console.log(error)
         })
     }
