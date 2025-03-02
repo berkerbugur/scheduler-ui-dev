@@ -2,9 +2,8 @@
   display: flex;
   gap: 12px;
   margin: 28px 0 0 44px;
-  height: 412px;
+  height: 346px;
   background-color: white;
-  align-content: flex-start;
 }
 
 .calendar-empty {
@@ -37,4 +36,18 @@
 
 .day-column:not(:first-child) {
   background-color: transparent;
+}
+
+.template-container {
+  display: flex;
+  gap: 12px;
+  color: #E11BB6;
+  margin: 0 0 42px 44px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.template {
+  border-top: 3px solid;
+  flex-shrink: 0;
 }

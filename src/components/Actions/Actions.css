@@ -8,13 +8,18 @@
 .btn {
   padding: 10px 20px;
   border: none;
-  cursor: pointer;
   color: white;
   font-weight: bold;
   width: 160px;
   height: 48px;
 }
 
-.reset { background-color: #333; }
-.autocomplete { background-color: #E11BB6; }
-.upload { background-color: #999; }
+.pointer {
+  cursor: pointer;
+}
+
+.active-p { background-color: #E11BB6; }
+.disabled-p { background-color: #E11BB64D; }
+
+.active-b { background-color: #333; }
+.disabled-b { background-color: #999; }

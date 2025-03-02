@@ -7,10 +7,14 @@ import {getDateRange} from "../../utils/dateUtils.js";
 
 const Schedule = () => {
     const [startDate, setStartDate] = useState(null);
+    const [schedule, setSchedule] = useState(null)
     const [endDate, setEndDate] = useState(null);
     const [pageStart, setPageStart] = useState(true);
     const [pageEnd, setPageEnd] = useState(false);
-    const [schedule, setSchedule] = useState(null)
+    const [canReset, setCanReset] = useState(false)
+    const [canAutoComp, setCanAutoComp] = useState(false)
+    const [canUpload, setCanUpload] = useState(false)
+    const [resetSlots, setResetSlots] = useState(false)
     const calenderRef = useRef(null);
 
     const prev = () => {calenderRef.current?.prevDates()};
@@ -21,10 +25,32 @@ const Schedule = () => {
         const dateRange = getDateRange(startDate, endDate);
         dateRange?.forEach(date => { scheduleMap.set(date, []); });
         setSchedule(scheduleMap)
-    }, [startDate, endDate]);
+    }, [startDate, endDate, resetSlots]);
 
     const addSlot = (day, slot) => {
-        setSchedule(new Map(schedule.set(day, [...schedule.get(day), slot])));
+        setCanReset(true)
+        setSchedule(new Map(schedule.set(day, [...schedule.get(day) || [], slot]))); // TODO problematic entry addition, key repetition
+    };
+
+    const doReset = () => {
+        setCanReset(false)
+        setCanAutoComp(false)
+        setCanUpload(false)
+        setResetSlots(!resetSlots)
+    }
+
+    const doAutoComp = () => {
+        setCanAutoComp(false)
+    }
+
+    const doUpload = () => {
+        setCanReset(false)
+        setCanAutoComp(false)
+        setCanUpload(false)
+    }
+
+    const onHover = () => {
+        console.log('reflect sched')
     }
 
     return (
@@ -40,8 +66,22 @@ const Schedule = () => {
                 pageStart={pageStart}
                 pageEnd={pageEnd}
             />
-            <Calendar schedule={schedule} setPageStart={setPageStart} setPageEnd={setPageEnd} addSlot={addSlot} ref={calenderRef} />
-            <Actions/>
+            <Calendar
+                schedule={schedule}
+                setPageStart={setPageStart}
+                setPageEnd={setPageEnd}
+                addSlot={addSlot}
+                ref={calenderRef}
+            />
+            <Actions
+                reset={doReset}
+                autoComp={doAutoComp}
+                upload={doUpload}
+                canReset={canReset}
+                canAutoComp={canAutoComp}
+                canUpload={canUpload}
+                hover={onHover}
+            />
         </div>
     );
 };
