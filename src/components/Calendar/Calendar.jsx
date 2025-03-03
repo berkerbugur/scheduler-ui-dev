@@ -19,7 +19,7 @@ const Calendar = forwardRef(({
                                  addSlot,
                                  deleteSlot,
                                  canAutoComp,
-                                 canReflect
+                                 dayGap
                              }, ref) => {
     const [minPage, setMinPage] = useState(0)
     const [maxPage, setMaxPage] = useState(0)
@@ -39,6 +39,25 @@ const Calendar = forwardRef(({
         setPageEnd(maxPage === days?.length);
         setPagedDays(days.slice(minPage, maxPage))
     }, [days, minPage, maxPage]);
+
+    const canReflect = useMemo(() => {
+        return [...template.keys()].length > 0 && !dayGap
+    }, [dayGap, template]);
+
+    const rep = useMemo(() => {
+        const tempDays = [...template.keys()]
+        let repeat = 0
+
+        if (!dayGap && tempDays.length > 0) {
+            if ([...schedule.keys()].length < maxDayIndex) {
+                repeat = Math.ceil([...schedule.keys()].length / tempDays.length)
+            } else {
+                repeat = Math.ceil(maxDayIndex / tempDays.length)
+            }
+        }
+
+        return repeat
+    }, [dayGap, schedule, template]);
 
     useImperativeHandle(ref, () => ({
         nextDates,
@@ -93,25 +112,18 @@ const Calendar = forwardRef(({
     };
 
     const getWidth = useCallback((index) => {
-        const rootLength = template?.rootSlots.length
-        const dayList = schedule.keys()
-        const dayListLength = [...dayList].length
-        if (dayListLength < maxDayIndex) {
-            if ((rootLength - 1) === index) {
-                return (160 * (dayList % rootLength)) + (12 * ((dayList % rootLength) - 1))
-            }
+        const rootLength = [...template.values()].length
+        const dayList = [...schedule.keys()]
+        const dayListLength = dayList.length
 
-            return (160 * rootLength) + (12 * rootLength - 1)
-            // return (160 * ([...schedule.keys()].length - rootLength)) + (12 * ([...schedule.keys()].length - rootLength - 1))
-        }
-        if (rootLength === 1 || index === template?.repetition - 1) {
-            if (Math.abs(maxDayIndex / rootLength) < 2) {
-                return (160 * (maxDayIndex - rootLength)) + (12 * (maxDayIndex - rootLength - 1))
-            }
-            return 160
+        const seed = dayListLength > maxDayIndex ? maxDayIndex : dayListLength
+
+        if (rep - 1 === index) {
+            const mod = seed % rootLength === 0 ? 1 : seed % rootLength;
+            return (160 * mod) + (12 * (mod - 1))
         }
 
-        return ((160 * template?.rootSlots.length)) + (12 * (template?.rootDays.length - 1))
+        return (160 * rootLength) + (12 * (rootLength - 1))
     }, [template, schedule]);
 
     return (
@@ -136,7 +148,7 @@ const Calendar = forwardRef(({
             </div>
             <div className={`template-container ${minPage === 0 && canAutoComp && canReflect ? "" : "invisible"}`}>
                 {
-                    template && template.repetition > 0 && [...Array(template.repetition)].map((_, index) => (
+                    rep > 0 && [...Array(rep)].map((_, index) => (
                         <div key={index} className="template"
                              style={{width: getWidth(index) + 'px'}}>{index > 0 ? 'Copy' : 'Template'}</div>
                     ))

@@ -1,12 +1,12 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import DateControls from '../DateControls/DateControls';
 import Calendar from '../Calendar/Calendar';
 import Actions from '../Actions/Actions';
 import './Schedule.css';
 import {addDays, getDateCount, getDateRange, getGlobalDateString} from "../../utils/dateUtils.js";
-import {maxDayIndex} from "../../constant/appConstants.js";
 import {api, endpoint} from "../../api/api.js";
 import {dismissToast, errorToast, loaderToast} from "../../utils/toasterUtil.js";
+import {sortMap} from "../../utils/mapUtil.js";
 
 const Schedule = ({closed, setIsOpen}) => {
     const [schedule, setSchedule] = useState(new Map())
@@ -19,14 +19,9 @@ const Schedule = ({closed, setIsOpen}) => {
     const [canUpload, setCanUpload] = useState(false)
     const [resetSlots, setResetSlots] = useState(false)
     const [hover, setHover] = useState(false)
-    const [canReflect, setCanReflect] = useState(false)
     const [endDistance, setEndDistance] = useState(0)
     const [validationError, setValidationError] = useState(false)
-    const [template, setTemplate] = useState({
-        repetition: 0,
-        rootDays: [],
-        rootSlots: []
-    })
+    const [template, setTemplate] = useState(new Map())
 
     const calenderRef = useRef(null);
 
@@ -37,33 +32,14 @@ const Schedule = ({closed, setIsOpen}) => {
         calenderRef.current?.nextDates()
     };
 
-    const rep = useMemo(() => {
-        const tempDays = template.rootDays
-        let repeat = 0
-
-        if (tempDays.length > 0) {
-            if ([...schedule.keys()].length < maxDayIndex) {
-                repeat = Math.ceil([...schedule.keys()].length / tempDays.length)
-            }
-            repeat = Math.ceil(maxDayIndex / tempDays.length)
-        }
-
-        return repeat
-    }, [template]);
-
     useEffect(() => {
         setSchedule(new Map())
         setStartDate(null)
         setEndDate(null)
-        setHover(false)
         setCanAutoComp(false)
         setCanUpload(false)
         setCanReset(false)
-        setTemplate({
-            repetition: 0,
-            rootDays: [],
-            rootSlots: []
-        })
+        setTemplate(new Map())
     }, [closed]);
 
     useEffect(() => {
@@ -73,8 +49,7 @@ const Schedule = ({closed, setIsOpen}) => {
             schedule.get(getGlobalDateString(date));
             scheduleMap.set(getGlobalDateString(date), schedule.get(getGlobalDateString(date)) || []);
         });
-
-        setCanAutoComp(scheduleMap.values().some(slots => slots.length > 0))
+        setCanAutoComp([...scheduleMap.values()].some(slots => slots.length > 0))
         setSchedule(scheduleMap)
         setEndDistance(getDateCount(startDate, endDate))
     }, [endDate, resetSlots]);
@@ -84,85 +59,64 @@ const Schedule = ({closed, setIsOpen}) => {
     }, [startDate]);
 
     useEffect(() => {
-        let dayGap = false
-        const roots = template.rootDays
-        roots.forEach((day, index) => {
-            if (index !== 0 && roots[index - 1] && getDateCount(roots[index - 1], day) > 2) {
-                dayGap = true
+        setCanUpload([...schedule.values()].some(slot => slot.length > 0))
+    }, [schedule])
+
+    const dayGap = useMemo(() => {
+        let gap = false
+        setCanAutoComp(false)
+
+        const rootDays = [...template.keys()]
+        rootDays.forEach((day, index) => {
+            if (index !== 0 && getDateCount(rootDays[index - 1], day) > 2) {
+                gap = true
             }
         })
 
-        setCanReflect(!dayGap)
-
-        if (dayGap) {
-            return
+        if (rootDays.length > 0) {
+            setCanAutoComp(!gap)
         }
-
-        hover ? addTemplate() : removeTemplate();
-    }, [hover])
-
-    useEffect(() => {
-        setTemplate({
-            repetition: rep,
-            rootDays: template.rootDays,
-            rootSlots: template.rootSlots,
-        })
-
-        setCanUpload([...schedule.values()].some(slot => slot.length > 0))
-    }, [schedule])
+        return gap
+    }, [template]);
 
     const addSlot = (day, slot) => {
         if (schedule.get(day).includes(slot)) return
 
-        setSchedule(new Map(schedule.set(day, [...schedule.get(day) || [], slot])));
+        setSchedule(sortMap(schedule.set(day, [...schedule.get(day) || [], slot])));
+        setTemplate(sortMap(template.set(day, [...template.get(day) || [], slot])));
 
-        const tempDays = template.rootDays
-        const tempSlots = []
-
-        if (!tempDays.includes(day)) {
-            tempDays.push(day)
-            tempDays.sort()
-        }
-
+        // validates slot ascendancy
         schedule.values().forEach(slots => {
-            if (slots.length > 0) {
-                if (slots.length >= 1) {
-                    setValidationError(slots.some((slot, index) => {
-                        if (index !== 0) return slot < slots[index - 1]
-                    }))
-                }
-
-                tempSlots.push(slots)
-            }
-        })
-
-        setTemplate({
-            repetition: rep,
-            rootDays: tempDays,
-            rootSlots: tempSlots,
-        })
-
-        setCanReset(true)
-        setCanAutoComp(true)
-    };
-
-    const deleteSlot = (day, slot) => {
-        const slots = schedule.get(day).filter(s => s !== slot);
-        setSchedule(new Map(schedule.set(day, slots)))
-
-        schedule.values().forEach(slots => {
-            if (slots.length >= 1) {
+            if (slots.length > 1) {
                 setValidationError(slots.some((slot, index) => {
                     if (index !== 0) return slot < slots[index - 1]
                 }))
             }
         })
 
-        setTemplate({
-            repetition: rep,
-            rootSlots: template.rootSlots.filter(s => s !== slot),
-            rootDays: template.rootDays.filter(d => d !== day)
+
+
+        setCanReset(true)
+    };
+
+    const deleteSlot = (day, slot) => {
+        setSchedule(new Map(schedule.set(day, [...schedule.get(day) || []].filter(d => d !== slot))));
+        setTemplate(new Map(template.set(day, [...schedule.get(day) || []].filter(d => d !== slot))));
+
+        if ([...template.get(day)].length === 0) {
+            template.delete(day)
+            setTemplate(new Map(template))
+        }
+
+        schedule.values().forEach(slots => {
+            if (slots.length > 1) {
+                setValidationError(slots.some((slot, index) => {
+                    if (index !== 0) return slot < slots[index - 1]
+                }))
+            }
         })
+
+        setCanReset([...template.values()].some(slots => slots.length > 0))
     }
 
     const doReset = () => {
@@ -174,19 +128,15 @@ const Schedule = ({closed, setIsOpen}) => {
         setCanAutoComp(false)
         setCanUpload(false)
         setResetSlots(!resetSlots)
-        setTemplate({
-            repetition: 0,
-            rootDays: [],
-            rootSlots: []
-        })
+        setTemplate(new Map())
     }
 
     const doAutoComp = () => {
         loaderToast()
         const requestSchedule = {}
 
-        schedule.keys().forEach(day => {
-            if (template.rootDays.includes(day)) requestSchedule[new Date(day)] = schedule.get(day)
+        template.keys().forEach(day => {
+            requestSchedule[new Date(day)] = schedule.get(day)
         })
 
         const request = {
@@ -206,14 +156,10 @@ const Schedule = ({closed, setIsOpen}) => {
 
             setSchedule(newSchedule)
             setCanAutoComp(false)
-            setHover(false)
             setCanUpload(true)
-            setTemplate({
-                repetition: 0,
-                rootDays: [],
-                rootSlots: []
-            })
+            setTemplate(new Map())
         }).catch(error => {
+            console.log(error)
             dismissToast()
             errorToast()
         })
@@ -239,32 +185,36 @@ const Schedule = ({closed, setIsOpen}) => {
                 setIsOpen(true)
             }
         }).catch(error => {
+            console.log(error)
             dismissToast()
             errorToast()
         })
     }
 
-    const onHover = (val) => {
-        setHover(canAutoComp && val)
-    }
-
     const addTemplate = () => {
-        const rootSlots = template.rootSlots
+        if (!canAutoComp) return
+
+        if (dayGap) return;
+
+        const rootSlots = [...template.values()]
         const templateLength = rootSlots.length
         const cpSched = new Map(schedule)
 
         cpSched?.keys().forEach((day, index) => {
-            if (!template.rootDays.includes(day)) {
+            if (![...template.keys()].includes(day)) {
                 cpSched.set(day, index + 1 % templateLength === 0 ? [...rootSlots[templateLength - 1]] : [...rootSlots[index % templateLength]]);
             }
         })
         setSchedule(cpSched)
+        setHover(true)
     }
 
     const removeTemplate = () => {
         if (!canAutoComp) return
 
-        const roots = template.rootDays
+        if (dayGap) return;
+
+        const roots = [...template.keys()]
         const cpSched = new Map(schedule)
 
         cpSched?.keys().forEach(key => {
@@ -274,6 +224,7 @@ const Schedule = ({closed, setIsOpen}) => {
         })
 
         setSchedule(cpSched)
+        setHover(false)
     }
 
     return (
@@ -298,7 +249,7 @@ const Schedule = ({closed, setIsOpen}) => {
                 ref={calenderRef}
                 canAutoComp={hover}
                 template={template}
-                canReflect={canReflect}
+                dayGap={dayGap}
             />
             <Actions
                 reset={doReset}
@@ -307,7 +258,8 @@ const Schedule = ({closed, setIsOpen}) => {
                 canReset={canReset}
                 canAutoComp={canAutoComp}
                 canUpload={canUpload}
-                hover={onHover}
+                addTemplate={addTemplate}
+                removeTemplate={removeTemplate}
                 validationErr={validationError}
             />
         </div>

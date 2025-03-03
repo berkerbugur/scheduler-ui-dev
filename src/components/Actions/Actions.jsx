@@ -1,6 +1,6 @@
 import './Actions.css';
 
-const Actions = ({reset, autoComp, upload, canReset, canAutoComp, canUpload, hover, validationErr}) => {
+const Actions = ({reset, autoComp, upload, canReset, canAutoComp, canUpload, addTemplate, removeTemplate, validationErr}) => {
     return (
         <div className="footer">
             <span className={`validation ${validationErr ? '' : 'invisible'}`}>Day slots should be in ascending order.</span>
@@ -9,8 +9,8 @@ const Actions = ({reset, autoComp, upload, canReset, canAutoComp, canUpload, hov
                         onClick={reset}>Reset
                 </button>
                 <button className={`btn ${canAutoComp ? 'active-p pointer' : 'disabled-p'}`} disabled={!canAutoComp}
-                        onClick={autoComp} onMouseEnter={() => canAutoComp && hover(true)}
-                        onMouseLeave={() => canAutoComp && hover(false)}>Autocomplete
+                        onClick={autoComp} onMouseEnter={() => canAutoComp && addTemplate()}
+                        onMouseLeave={() => canAutoComp && removeTemplate()}>Autocomplete
                 </button>
                 <button className={`btn ${!canUpload || validationErr ? 'disabled-b' : 'active-b pointer '}`} disabled={!canUpload || validationErr}
                         onClick={upload}>Upload
