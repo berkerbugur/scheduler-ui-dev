@@ -19,7 +19,8 @@ const Calendar = forwardRef(({
                                  addSlot,
                                  deleteSlot,
                                  canAutoComp,
-                                 dayGap
+                                 dayGap,
+                                 hover
                              }, ref) => {
     const [minPage, setMinPage] = useState(0)
     const [maxPage, setMaxPage] = useState(0)
@@ -146,7 +147,7 @@ const Calendar = forwardRef(({
                     </div>
                 ))}
             </div>
-            <div className={`template-container ${minPage === 0 && canAutoComp && canReflect ? "" : "invisible"}`}>
+            <div className={`template-container ${hover && minPage === 0 && canAutoComp && canReflect ? "" : "invisible"}`}>
                 {
                     rep > 0 && [...Array(rep)].map((_, index) => (
                         <div key={index} className="template"

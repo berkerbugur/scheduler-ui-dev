@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import DateControls from '../DateControls/DateControls';
 import Calendar from '../Calendar/Calendar';
 import Actions from '../Actions/Actions';
@@ -18,10 +18,10 @@ const Schedule = ({closed, setIsOpen}) => {
     const [canAutoComp, setCanAutoComp] = useState(false)
     const [canUpload, setCanUpload] = useState(false)
     const [resetSlots, setResetSlots] = useState(false)
-    const [hover, setHover] = useState(false)
     const [endDistance, setEndDistance] = useState(0)
     const [validationError, setValidationError] = useState(false)
     const [template, setTemplate] = useState(new Map())
+    const [hover, setHover] = useState(false)
 
     const calenderRef = useRef(null);
 
@@ -33,13 +33,16 @@ const Schedule = ({closed, setIsOpen}) => {
     };
 
     useEffect(() => {
-        setSchedule(new Map())
-        setStartDate(null)
-        setEndDate(null)
-        setCanAutoComp(false)
-        setCanUpload(false)
-        setCanReset(false)
-        setTemplate(new Map())
+        if (closed) {
+            setSchedule(new Map())
+            setStartDate(null)
+            setEndDate(null)
+            setCanAutoComp(false)
+            setCanUpload(false)
+            setCanReset(false)
+            setTemplate(new Map())
+            setHover(false)
+        }
     }, [closed]);
 
     useEffect(() => {
@@ -116,7 +119,7 @@ const Schedule = ({closed, setIsOpen}) => {
             }
         })
 
-        setCanReset([...template.values()].some(slots => slots.length > 0))
+        setCanReset([...schedule.values()].some(slots => slots.length > 0))
     }
 
     const doReset = () => {
@@ -124,6 +127,7 @@ const Schedule = ({closed, setIsOpen}) => {
         clearedSchedule.keys().forEach(day => clearedSchedule.set(day, []))
         setSchedule(clearedSchedule)
 
+        setHover(false)
         setCanReset(false)
         setCanAutoComp(false)
         setCanUpload(false)
@@ -247,9 +251,10 @@ const Schedule = ({closed, setIsOpen}) => {
                 addSlot={addSlot}
                 deleteSlot={deleteSlot}
                 ref={calenderRef}
-                canAutoComp={hover}
+                canAutoComp={canAutoComp}
                 template={template}
                 dayGap={dayGap}
+                hover={hover}
             />
             <Actions
                 reset={doReset}

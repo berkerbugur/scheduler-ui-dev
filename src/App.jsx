@@ -8,6 +8,11 @@ function App() {
     const [isOpen, setIsOpen] = useState(false)
     const [closed, setClosed] = useState(false)
 
+    const openModal = () => {
+        setIsOpen(true);
+        setClosed(false)
+    }
+
     const closeModal = () => {
         setIsOpen(false)
         setClosed(true)
@@ -15,7 +20,7 @@ function App() {
 
     return (
         <>
-            <Home closed={closed} setIsOpen={setIsOpen} />
+            <Home closed={closed} setIsOpen={openModal} />
             <Modal isOpen={isOpen} closeModal={closeModal} />
             <Toaster position="bottom-right" richColors />
         </>
