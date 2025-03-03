@@ -6,10 +6,11 @@ import './Schedule.css';
 import {addDays, getDateCount, getDateRange, getGlobalDateString} from "../../utils/dateUtils.js";
 import {maxDayIndex} from "../../constant/appConstants.js";
 import {api, endpoint} from "../../api/api.js";
+import {dismissToast, errorToast, loaderToast} from "../../utils/toasterUtil.js";
 
-const Schedule = () => {
-    const [startDate, setStartDate] = useState(null);
+const Schedule = ({closed, setIsOpen}) => {
     const [schedule, setSchedule] = useState(new Map())
+    const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [pageStart, setPageStart] = useState(true);
     const [pageEnd, setPageEnd] = useState(false);
@@ -38,12 +39,32 @@ const Schedule = () => {
 
     const rep = useMemo(() => {
         const tempDays = template.rootDays
-        return [...schedule.keys()].length > maxDayIndex ?
-            tempDays.length > 0
-                ? Math.ceil(maxDayIndex / tempDays.length)
-                : 0
-            : Math.ceil([...schedule.keys()].length / tempDays.length);
-    }, []);
+        let repeat = 0
+
+        if (tempDays.length > 0) {
+            if ([...schedule.keys()].length < maxDayIndex) {
+                repeat = Math.ceil([...schedule.keys()].length / tempDays.length)
+            }
+            repeat = Math.ceil(maxDayIndex / tempDays.length)
+        }
+
+        return repeat
+    }, [template]);
+
+    useEffect(() => {
+        setSchedule(new Map())
+        setStartDate(null)
+        setEndDate(null)
+        setHover(false)
+        setCanAutoComp(false)
+        setCanUpload(false)
+        setCanReset(false)
+        setTemplate({
+            repetition: 0,
+            rootDays: [],
+            rootSlots: []
+        })
+    }, [closed]);
 
     useEffect(() => {
         let scheduleMap = new Map();
@@ -81,18 +102,14 @@ const Schedule = () => {
     }, [hover])
 
     useEffect(() => {
-        //const daysLength = template.rootDays.length
-
-        // console.log([...schedule.keys()].length > maxDayIndex ? daysLength > 0 ? Math.ceil(maxDayIndex / daysLength) : 0 : Math.ceil([...schedule.keys()].length / daysLength))
-
-        // setTemplate({
-        //     repetition: [...schedule.keys()].length > maxDayIndex ? daysLength > 0 ? Math.ceil(maxDayIndex / daysLength) : 0 : Math.ceil([...schedule.keys()].length / daysLength) || 0,
-        //     rootDays: template.rootDays,
-        //     rootSlots: template.rootSlots,
-        // })
+        setTemplate({
+            repetition: rep,
+            rootDays: template.rootDays,
+            rootSlots: template.rootSlots,
+        })
 
         setCanUpload([...schedule.values()].some(slot => slot.length > 0))
-    }, [schedule]) // TODO infinity bug
+    }, [schedule])
 
     const addSlot = (day, slot) => {
         if (schedule.get(day).includes(slot)) return
@@ -165,6 +182,7 @@ const Schedule = () => {
     }
 
     const doAutoComp = () => {
+        loaderToast()
         const requestSchedule = {}
 
         schedule.keys().forEach(day => {
@@ -178,6 +196,7 @@ const Schedule = () => {
         }
 
         api.put(endpoint.extend, request).then(response => {
+            dismissToast()
             const extendedSched = response?.data?.data
             const newSchedule = new Map()
 
@@ -195,11 +214,13 @@ const Schedule = () => {
                 rootSlots: []
             })
         }).catch(error => {
-            console.log(error)
+            dismissToast()
+            errorToast()
         })
     }
 
     const doUpload = () => {
+        loaderToast()
         const requestSchedule = {}
 
         schedule.keys().forEach(day => {
@@ -213,20 +234,13 @@ const Schedule = () => {
         }
 
         api.post(endpoint.create, request).then(response => {
-
+            dismissToast()
             if (response.data?.validationErrors.length === 0) {
-                setHover(false)
-                setCanAutoComp(false)
-                setCanUpload(false)
-                setCanReset(false)
-                setTemplate({
-                    repetition: 0,
-                    rootDays: [],
-                    rootSlots: []
-                })
+                setIsOpen(true)
             }
         }).catch(error => {
-            console.log(error)
+            dismissToast()
+            errorToast()
         })
     }
 

@@ -1,10 +1,10 @@
 import Schedule from '../../components/Schedule/Schedule.jsx';
 import './Home.css';
 
-const Home = () => {
+const Home = ({closed, setIsOpen}) => {
   return (
     <div className="home-container">
-      <Schedule />
+      <Schedule closed={closed} setIsOpen={setIsOpen} />
     </div>
   );
 };
