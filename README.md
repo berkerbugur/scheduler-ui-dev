@@ -1,8 +1,19 @@
-# React + Vite
+# Scheduler API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Serves as a client for creating schedules
 
-Currently, two official plugins are available:
+### For Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##### yarn
+`yarn && yarn dev`
+##### npm
+`npm i && npm dev`
+
+### For Production Ready Build
+
+##### Run
+`docker build -t scheduler-ui-dc .`
+##### then run
+`docker run --name scheduler-client -p 3000:3000 scheduler-ui-dc`
+##### And locate to
+[http://localhost:3000](http://localhost:3000)
