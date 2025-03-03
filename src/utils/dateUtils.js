@@ -39,11 +39,14 @@ const getDateCount = (startDate, endDate) => {
     const fDate = new Date(startDate)
     const eDate = new Date(endDate)
 
-    let dayCount = 0;
     const diffTime = Math.abs(eDate - fDate);
-    dayCount = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-    return dayCount;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }
 
-export { getDayName, getFormattedDate, getDateRange, getDateCount, getGlobalDateString }
+const addDays = (day, count) => {
+    const current = new Date(day)
+    current.setDate(current.getDate() + count - 1)
+    return current
+}
+
+export { getDayName, getFormattedDate, getDateRange, getDateCount, getGlobalDateString, addDays }

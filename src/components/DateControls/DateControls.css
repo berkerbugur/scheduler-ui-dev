@@ -35,11 +35,6 @@
   font-weight: normal;
 }
 
-.react-datepicker-ignore-onclickoutside {
-  /* TODO This is the class that makes the datepicker wiggle*/
-  margin: 0;
-}
-
 .date-input {
   display: flex;
   align-items: center;
@@ -115,10 +110,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.custom-datepicker::placeholder {
-  text-align: center;
+  max-width: 160px;
 }
 
 /* Overriding datepicker lib styles */

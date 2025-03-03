@@ -20,6 +20,9 @@
 
 /* TODO Refactor classes below */
 .time-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid #ff69b4;
     padding: 11px;
     text-align: center;
@@ -27,6 +30,33 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: white;
     cursor: pointer;
+}
+
+.time-slot:hover {
+    background-color: #fff0f7;
+    border-color: #ff45a4;
+}
+
+.time-slot.selected {
+    color: #E11BB6;
+    border-color: #E11BB6;
+}
+
+.time-slot-text {
+    flex: 1;
+}
+
+.time-slot-remove {
+    padding-bottom: 2px;
+    visibility: hidden;
+}
+
+.time-slot:hover .time-slot-remove {
+    visibility: visible;
+}
+
+.time-slot-remove:hover {
+    transform: scale(1.5);
 }
 
 .time-input {
@@ -49,14 +79,4 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #5C5C5C;
     cursor: pointer;
-}
-
-.time-slot:hover {
-    background-color: #fff0f7;
-    border-color: #ff45a4;
-}
-
-.time-slot.selected {
-    color: #E11BB6;
-    border-color: #E11BB6;
 }

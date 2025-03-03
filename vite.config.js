@@ -11,7 +11,7 @@ export default defineConfig({
         cors: {
             origin: "http://localhost:9080",
             methods: ["PUT", "POST", "OPTIONS"],
-            allowedHeaders: ["Content-Type", "Authorization"],
+            allowedHeaders: ["Content-Type"],
             preflightContinue: true
         }
     },

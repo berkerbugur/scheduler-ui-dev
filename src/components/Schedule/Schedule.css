@@ -2,10 +2,9 @@
   position: relative;
   margin: 0;
   left: 50%;
-  top: 25%;
+  top: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  border: black solid 1px;
   padding: 44px 44px 33px 0;
 }
 

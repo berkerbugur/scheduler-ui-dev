@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import './TimeSlots.css';
 
-const TimeSlots = ({ timeSlots, day, addSlot, scrollable, setScrollable}) => {
+const TimeSlots = ({ timeSlots, day, addSlot, deleteSlot, scrollable, setScrollable}) => {
     const [hover, setHover] = useState(false)
     const [input, setInput] = useState('');
     const [isAdd, setIsAdd] = useState(true)
@@ -41,7 +41,8 @@ const TimeSlots = ({ timeSlots, day, addSlot, scrollable, setScrollable}) => {
                 <div
                     key={index}
                     className="time-slot selected">
-                    {slot}
+                    <span className='time-slot-text'>{slot}</span>
+                    <div className='time-slot-remove' onClick={() => {deleteSlot(day, slot)}}>x</div>
                 </div>
             ))
             }

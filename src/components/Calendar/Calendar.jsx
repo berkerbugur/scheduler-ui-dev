@@ -11,7 +11,7 @@ const pageDirection = {
 }
 
 // eslint-disable-next-line react/display-name
-const Calendar = forwardRef(({schedule, template, setPageStart, setPageEnd, addSlot, canAutoComp}, ref) => {
+const Calendar = forwardRef(({schedule, template, setPageStart, setPageEnd, addSlot, deleteSlot, canAutoComp, canReflect}, ref) => {
     const [minPage, setMinPage] = useState(0)
     const [maxPage, setMaxPage] = useState(0)
     const [pagedDays, setPagedDays] = useState([])
@@ -29,7 +29,7 @@ const Calendar = forwardRef(({schedule, template, setPageStart, setPageEnd, addS
         setPageStart(minPage === 0);
         setPageEnd(maxPage === days?.length);
         setPagedDays(days.slice(minPage, maxPage))
-    }, [schedule, minPage, maxPage]);
+    }, [days, minPage, maxPage]);
 
     useImperativeHandle(ref, () => ({
         nextDates,
@@ -85,15 +85,20 @@ const Calendar = forwardRef(({schedule, template, setPageStart, setPageEnd, addS
 
     const getWidth = useCallback((index) => {
         const rootLength = template?.rootSlots.length
+        if ([...schedule.keys()].length < maxDayIndex) {
+            if (Math.abs([...schedule.keys()].length / rootLength) < 2)
+                return (160 * ([...schedule.keys()].length - rootLength)) + (12 * ([...schedule.keys()].length - rootLength -1))
+        }
+
         if (rootLength === 1 || index === template?.repetition - 1) {
-            if (Math.abs(maxDayIndex / rootLength) < 2) {
+            if (Math.abs(maxDayIndex / rootLength) < 2)
                 return (160 * (maxDayIndex - rootLength)) + (12 * (maxDayIndex - rootLength -1))
-            }
+
             return 160
         }
 
         return ((160 * template?.rootSlots.length)) + (12 * (template?.rootDays.length-1))
-    }, [template]);
+    }, [template, schedule]);
 
     return (
         <div>
@@ -110,11 +115,12 @@ const Calendar = forwardRef(({schedule, template, setPageStart, setPageEnd, addS
                             addSlot={addSlot}
                             scrollable={scrollable}
                             setScrollable={setScrollable}
+                            deleteSlot={deleteSlot}
                         />
                     </div>
                 ))}
             </div>
-            <div className={`template-container ${minPage === 0 && canAutoComp ? "" : "invisible"}`}>
+            <div className={`template-container ${minPage === 0 && canAutoComp && canReflect ? "" : "invisible"}`}>
                 {
                     template && template.repetition > 0 && [...Array(template.repetition)].map((_, index) => (
                         <div key={index} className="template" style={{width: getWidth(index) + 'px'}}>{index > 0 ? 'Copy' : 'Template'}</div>

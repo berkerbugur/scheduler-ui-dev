@@ -1,8 +1,17 @@
+.footer {
+  display: flex;
+  margin-top: 37px;
+  justify-content: space-between;
+}
+
 .actions {
   display: flex;
-  justify-content: flex-end;
   gap: 12px;
-  margin-top: 37px;
+}
+
+.validation {
+  margin-left: 44px;
+  color: red;
 }
 
 .btn {
